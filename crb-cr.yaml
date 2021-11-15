@@ -1,0 +1,51 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterRoleA
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  resourceNames: ["master","node1"]
+  verbs: ["get"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: clusterRoleB
+rules:
+- apiGroups: [""]
+  resources: ["nodes"]
+  resourceNames: ["node2"]
+  verbs: ["get"]
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: CRB-A
+subjects:
+- kind: Group
+  name: teamA
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: clusterRoleA
+  apiGroup: rbac.authorization.k8s.io
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: CRB-B
+subjects:
+- kind: Group
+  name: teamB
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: ClusterRole
+  name: clusterRoleB
+  apiGroup: rbac.authorization.k8s.io
