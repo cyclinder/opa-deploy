@@ -137,5 +137,5 @@ data:
       crb := clusterrolebindings[_]
       input.subject.name = crb.subjects[_].name
 
-      node := clusterroles[crb.roleRef.name].rules[_].resources[_]
+      node := clusterroles[crb.roleRef.name].rules[_].resourceNames[_]
     }
