@@ -5,16 +5,13 @@ metadata:
   namespace: opa
 data:
   main: |
-    package system
+    package cluster.list
 
     import data.cluster.list
     import data.kubernetes.clusterroles
     import data.kubernetes.clusterrolebindings
 
-    main =  {
-      "nodes" : nodes,
-    }
-
+   
     nodes[node] {
       crb := clusterrolebindings[_]
       input.subject.name = crb.subjects[_].name
