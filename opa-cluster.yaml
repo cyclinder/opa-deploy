@@ -126,16 +126,26 @@ data:
   main: |
     package system
 
-    import data.kubernetes.clusterroles
-    import data.kubernetes.clusterrolebindings
+    import data.kubernetes.admission
 
-    main =  {
-      "nodes" : nodes,
+    main = {
+      "apiVersion": "admission.k8s.io/v1beta1",
+      "kind": "AdmissionReview",
+      "response": response,
     }
 
-    nodes[node] {
-      crb := clusterrolebindings[_]
-      input.subject.name = crb.subjects[_].name
+    default uid = ""
 
-      node := clusterroles[crb.roleRef.name].rules[_].resourceNames[_]
+    uid = input.request.uid
+
+    response = {
+        "allowed": false,
+        "uid": uid,
+        "status": {
+            "message": reason,
+        },
+    } {
+        reason = concat(", ", admission.deny)
+        reason != ""
     }
+    else = {"allowed": true, "uid": uid}
