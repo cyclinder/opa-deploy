@@ -1,0 +1,23 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: opa-default-system-main
+  namespace: opa
+data:
+  main: |
+    package system
+
+    import data.cluster.list
+    import data.kubernetes.clusterroles
+    import data.kubernetes.clusterrolebindings
+
+    main =  {
+      "nodes" : nodes,
+    }
+
+    nodes[node] {
+      crb := clusterrolebindings[_]
+      input.subject.name = crb.subjects[_].name
+
+      node := clusterroles[crb.roleRef.name].rules[_].resourceNames[_]
+    }
